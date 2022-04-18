@@ -105,8 +105,8 @@ class PlaceApiProvider {
       params
           .addAll(<String, dynamic>{'components': 'country:$compomentCountry'});
     }
-    final response =
-        await callCloudFunction(functionName: 'getSuggestions', params: params);
+    final response = await callCloudFunction(
+        functionName: 'maps-getSuggestions', params: params);
 
     if (response['status'] == "OK") {
       final data = List.from(response["predictions"]);
@@ -138,8 +138,8 @@ class PlaceApiProvider {
           "Access-Control-Allow-Methods": 'GET',
         })); */
 
-    final response =
-        await callCloudFunction(functionName: 'getDetails', params: params);
+    final response = await callCloudFunction(
+        functionName: 'maps-getDetails', params: params);
 
     if (response['status'] == 'OK') {
       final result = Map<String, dynamic>.from(response['result']);
