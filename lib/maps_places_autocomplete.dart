@@ -17,7 +17,7 @@ class MapsPlacesAutocomplete extends HookWidget {
   late AddressService _addressService;
   OverlayEntry? entry;
   ValueNotifier<List<Suggestion>> _suggestions = ValueNotifier([]);
-  final void Function(Place place, String placeId) onSuggestionClick;
+  final void Function(Place place, Suggestion suggestion) onSuggestionClick;
 
   //your maps api key, must not be null
   final String mapsApiKey;
@@ -134,7 +134,7 @@ class MapsPlacesAutocomplete extends HookWidget {
           Place place = await _addressService.getPlaceDetail(s.placeId,
               usePlain: usePlain);
           isGettingDetails.value = false;
-          onSuggestionClick(place, s.placeId);
+          onSuggestionClick(place, s);
         },
       );
       list.add(w);
@@ -236,6 +236,7 @@ class MapsPlacesAutocomplete extends HookWidget {
       isGettingDetails.value = false;
       charUntilSearch.value = 0;
       _suggestions.value = [];
+      _controller.text = startText;
 
       focusNode.addListener(() {
         if (focusNode.hasFocus) {
