@@ -16,8 +16,8 @@ class MapsPlacesAutocomplete extends HookWidget {
   late TextEditingController _controller;
   late AddressService _addressService;
   OverlayEntry? entry;
-  List<Suggestion> _suggestions = [];
-  final void Function(Place place) onSuggestionClick;
+  ValueNotifier<List<Suggestion>> _suggestions = ValueNotifier([]);
+  final void Function(Place place, String placeId) onSuggestionClick;
 
   //your maps api key, must not be null
   final String mapsApiKey;
@@ -36,7 +36,6 @@ class MapsPlacesAutocomplete extends HookWidget {
 
   //BoxDecoration for the suggestions external container
   final BoxDecoration? containerDecoration;
-
   //InputDecoration, if none is given, it defaults to flutter standards
   final InputDecoration? inputDecoration;
 
@@ -50,6 +49,8 @@ class MapsPlacesAutocomplete extends HookWidget {
   final bool showGoogleTradeMark;
 
   final bool autofocus;
+  final bool usePlain;
+  final bool isOverlay;
 
   final TextStyle? textStyle;
 
@@ -67,6 +68,7 @@ class MapsPlacesAutocomplete extends HookWidget {
       required this.onSuggestionClick,
       required this.mapsApiKey,
       required this.buildItem,
+      this.usePlain = false,
       this.clearButton,
       this.containerDecoration,
       this.inputDecoration,
@@ -74,6 +76,7 @@ class MapsPlacesAutocomplete extends HookWidget {
       this.elevation,
       this.overlayOffset = 4,
       this.showGoogleTradeMark = true,
+      this.isOverlay = false,
       this.autofocus = true,
       this.textStyle,
       this.componentCountry,
@@ -87,14 +90,14 @@ class MapsPlacesAutocomplete extends HookWidget {
     final overlay = Overlay.of(context)!;
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
-    entry = OverlayEntry(builder: (context) {
+    entry = OverlayEntry(builder: (ctx) {
       return Positioned(
         width: size.width,
         child: CompositedTransformFollower(
             link: layerLink,
             showWhenUnlinked: false,
-            offset: Offset(0, size.height + overlayOffset),
-            child: buildOverlay()),
+            offset: Offset(0, size.height + overlayOffset + 8),
+            child: buildOverlay(ctx, size)),
       );
     });
     overlay.insert(entry!);
@@ -111,13 +114,16 @@ class MapsPlacesAutocomplete extends HookWidget {
     }
     _controller.clear();
     //focusNode.unfocus();
-    _suggestions = [];
+    _suggestions.value = [];
+    charUntilSearch.value = 0;
+    buildList();
+    //_suggestions = [];
   }
 
   List<Widget> buildList() {
     List<Widget> list = [];
-    for (int i = 0; i < _suggestions.length; i++) {
-      Suggestion s = _suggestions[i];
+    for (int i = 0; i < _suggestions.value.length; i++) {
+      Suggestion s = _suggestions.value[i];
       Widget w = InkWell(
         child: buildItem(s, i),
         onTap: () async {
@@ -125,9 +131,10 @@ class MapsPlacesAutocomplete extends HookWidget {
           hideOverlay();
           focusNode.unfocus();
           isGettingDetails.value = true;
-          Place place = await _addressService.getPlaceDetail(s.placeId);
+          Place place = await _addressService.getPlaceDetail(s.placeId,
+              usePlain: usePlain);
           isGettingDetails.value = false;
-          onSuggestionClick(place);
+          onSuggestionClick(place, s.placeId);
         },
       );
       list.add(w);
@@ -135,16 +142,36 @@ class MapsPlacesAutocomplete extends HookWidget {
     return list;
   }
 
-  Widget buildOverlay() => Material(
+  Widget buildOverlay(BuildContext context, Size size) => Material(
       color: containerDecoration != null ? Colors.transparent : Colors.white,
       elevation: elevation ?? 0,
       child: Container(
+        alignment: Alignment.center,
         decoration: containerDecoration ?? const BoxDecoration(),
         child: ListView(
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.zero,
           children: [
+            Visibility(
+              visible: _controller.text.isNotEmpty,
+              child: SizedBox(
+                child: Container(
+                  alignment: Alignment.center,
+                  //height: 16,
+                  width: size.width - 32,
+                  //padding: const EdgeInsets.only(top: 6),
+                  child: Center(
+                    child: LinearProgressIndicator(
+                      color: Theme.of(context).colorScheme.secondary,
+                      value: charUntilSearch.value == 0 || isSearching.value
+                          ? null
+                          : charUntilSearch.value / 4,
+                    ),
+                  ),
+                ),
+              ),
+            ),
             ...buildList(),
             if (showGoogleTradeMark)
               const Padding(
@@ -160,7 +187,8 @@ class MapsPlacesAutocomplete extends HookWidget {
     if (text != _lastText && text != "") {
       _lastText = text;
       try {
-        _suggestions = await _addressService.search(text);
+        _suggestions.value =
+            await _addressService.search(text, usePlain: usePlain);
       } catch (e) {
         error.value = e.toString();
       }
@@ -170,6 +198,9 @@ class MapsPlacesAutocomplete extends HookWidget {
   InputDecoration getInputDecoration() {
     if (inputDecoration != null) {
       return inputDecoration!.copyWith(
+          //contentPadding: EdgeInsets.zero,
+          hintStyle:
+              textStyle?.copyWith(color: textStyle?.color?.withOpacity(0.5)),
           suffixIcon: clearButton != null
               ? IconButton(
                   icon: clearButton!,
@@ -188,11 +219,13 @@ class MapsPlacesAutocomplete extends HookWidget {
   }
 
   ValueNotifier<String> error = ValueNotifier('');
+  ValueNotifier<bool> isSearching = ValueNotifier(false);
   @override
   Widget build(BuildContext context) {
     _controller = useTextEditingController(text: startText);
     isGettingDetails = useState(false);
-    final isSearching = useState(false);
+    _suggestions = useState([]);
+    isSearching = useState(false);
     charUntilSearch = useState(0);
     error = useState('');
 
@@ -202,6 +235,7 @@ class MapsPlacesAutocomplete extends HookWidget {
           AddressService(sessionToken, mapsApiKey, componentCountry, language);
       isGettingDetails.value = false;
       charUntilSearch.value = 0;
+      _suggestions.value = [];
 
       focusNode.addListener(() {
         if (focusNode.hasFocus) {
@@ -259,30 +293,8 @@ class MapsPlacesAutocomplete extends HookWidget {
                       }
                     },
                     autocorrect: false,
-                    decoration: getInputDecoration().copyWith(
-                      isCollapsed: false,
-                      suffix: Visibility(
-                        visible: _controller.text.isNotEmpty,
-                        child: SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.only(top: 6),
-                            child: AspectRatio(
-                              aspectRatio: 1.0,
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.secondary,
-                                value: charUntilSearch.value == 0 ||
-                                        isSearching.value
-                                    ? null
-                                    : charUntilSearch.value / 4,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                    decoration: getInputDecoration().copyWith()),
               ],
             ),
           );

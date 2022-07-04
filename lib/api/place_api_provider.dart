@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:dio/dio.dart';
 import 'package:maps_places_autocomplete/model/place.dart';
 import 'package:maps_places_autocomplete/model/suggestion.dart';
 
@@ -14,7 +15,8 @@ class PlaceApiProvider {
   final String? compomentCountry;
   final String? language;
 
-  /*  Future<List<Suggestion>> fetchSuggestions(String input) async {
+  Future<List<Suggestion>> fetchSuggestionsPlain(String input) async {
+    print("CALLING PLAIN");
     final Map<String, dynamic> parameters = <String, dynamic>{
       'input': input,
       'types': 'address',
@@ -36,13 +38,23 @@ class PlaceApiProvider {
         path: '/maps/api/place/autocomplete/json',
         queryParameters: parameters);
 
-    final response = await client.get(request, headers: {
+    /*  final response = await client.get(request, headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": 'GET',
-    });
+    }); */
+
+    final response = await Dio()
+        .get("https://maps.googleapis.com/maps/api/place/autocomplete/json",
+            queryParameters: parameters,
+            options: Options(headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": 'GET',
+            }));
 
     if (response.statusCode == 200) {
-      final result = json.decode(response.body);
+      //final result = json.decode(response.data);
+      final result = response.data;
+
       if (result['status'] == 'OK') {
         // compose suggestions in a list
         return result['predictions']
@@ -58,7 +70,6 @@ class PlaceApiProvider {
     }
   }
 
- */
   Future callCloudFunction(
       {required String functionName,
       required Map<String, dynamic> params}) async {
@@ -90,14 +101,6 @@ class PlaceApiProvider {
       'sessiontoken': sessionToken,
     };
 
-    /* final response =
-        await Dio().get("https://us-central1-gumbiapp.cloudfunctions.net/pac",
-            queryParameters: parameters,
-            options: Options(headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": 'GET',
-            })); */
-
     if (language != null) {
       params.addAll(<String, dynamic>{'language': language});
     }
@@ -115,6 +118,73 @@ class PlaceApiProvider {
           .toList();
     } else {
       throw Exception('Failed to fetch suggestion ${response['status']}');
+    }
+  }
+
+  Future<Place> getPlaceDetailFromIdPlain(String placeId) async {
+    // if you want to get the details of the selected place by place_id
+    print("PLAIN: PLACE DETAILS:");
+
+    final Map<String, dynamic> parameters = <String, dynamic>{
+      'place_id': placeId,
+      'fields': 'address_component,geometry',
+      'key': mapsApiKey,
+      'sessiontoken': sessionToken
+    };
+    final Uri request = Uri(
+        scheme: 'https',
+        host: 'maps.googleapis.com',
+        path: '/maps/api/place/details/json',
+        queryParameters: parameters);
+
+    //print(request.toString());
+
+    final response = await Dio().get(
+        "https://maps.googleapis.com/maps/api/place/details/json",
+        queryParameters: parameters);
+
+    //print("PLAIN: DETAILS response: $response");
+
+    if (response.statusCode == 200) {
+      final result = response.data;
+      if (result['status'] == 'OK') {
+        final components =
+            result['result']['address_components'] as List<dynamic>;
+        // build result
+        final place = Place();
+
+        place.lat = result['result']['geometry']['location']['lat'] as double;
+        place.lng = result['result']['geometry']['location']['lng'] as double;
+
+        components.forEach((c) {
+          final List type = c['types'];
+          if (type.contains('street_number')) {
+            place.streetNumber = c['long_name'];
+          }
+          if (type.contains('route')) {
+            place.street = c['long_name'];
+          }
+          if (type.contains('sublocality_level_1')) {
+            place.vicinity = c['long_name'];
+          }
+          if (type.contains('administrative_area_level_2')) {
+            place.city = c['long_name'];
+          }
+          if (type.contains('administrative_area_level_1')) {
+            place.state = c['long_name'];
+          }
+          if (type.contains('country')) {
+            place.country = c['long_name'];
+          }
+          if (type.contains('postal_code')) {
+            place.zipCode = c['long_name'];
+          }
+        });
+        return place;
+      }
+      throw Exception(result['error_message']);
+    } else {
+      throw Exception('Failed to fetch suggestion');
     }
   }
 
