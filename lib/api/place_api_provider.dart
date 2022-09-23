@@ -19,7 +19,7 @@ class PlaceApiProvider {
     print("CALLING PLAIN");
     final Map<String, dynamic> parameters = <String, dynamic>{
       'input': input,
-      'types': 'address',
+      'types': 'geocode|establishment',
       'key': mapsApiKey,
       'sessiontoken': sessionToken
     };

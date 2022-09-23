@@ -45,6 +45,8 @@ class MapsPlacesAutocomplete extends HookWidget {
   //Offset between the TextField and the Overlay
   final double overlayOffset;
 
+  final int searchMinChar;
+
   //if true, shows "powered by google" inside the suggestion list, after its items
   final bool showGoogleTradeMark;
 
@@ -73,6 +75,7 @@ class MapsPlacesAutocomplete extends HookWidget {
       this.containerDecoration,
       this.inputDecoration,
       this.startText = "",
+      this.searchMinChar = 4,
       this.elevation,
       this.overlayOffset = 4,
       this.showGoogleTradeMark = true,
@@ -166,7 +169,9 @@ class MapsPlacesAutocomplete extends HookWidget {
                       color: Theme.of(context).colorScheme.secondary,
                       value: charUntilSearch.value == 0 || isSearching.value
                           ? null
-                          : charUntilSearch.value / 4,
+                          : searchMinChar > 0
+                              ? (charUntilSearch.value / searchMinChar)
+                              : null,
                     ),
                   ),
                 ),
@@ -284,8 +289,8 @@ class MapsPlacesAutocomplete extends HookWidget {
                     autofocus: autofocus,
                     style: textStyle,
                     onChanged: (text) async {
-                      charUntilSearch.value = text.length % 4;
-                      if (text.isNotEmpty && text.length % 4 == 0) {
+                      charUntilSearch.value = text.length % searchMinChar;
+                      if (text.isNotEmpty && charUntilSearch.value == 0) {
                         if (!isSearching.value) {
                           isSearching.value = true;
                           await searchAddress(text);
@@ -295,6 +300,16 @@ class MapsPlacesAutocomplete extends HookWidget {
                     },
                     autocorrect: false,
                     cursorColor: Theme.of(context).colorScheme.secondary,
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (text) async {
+                      if (text.isNotEmpty && charUntilSearch.value == 0) {
+                        if (!isSearching.value) {
+                          isSearching.value = true;
+                          await searchAddress(text);
+                          isSearching.value = false;
+                        }
+                      }
+                    },
                     decoration: getInputDecoration().copyWith()),
               ],
             ),
