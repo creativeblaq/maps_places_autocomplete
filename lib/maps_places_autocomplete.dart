@@ -90,7 +90,7 @@ class MapsPlacesAutocomplete extends HookWidget {
       : super(key: key);
 
   void showOverlay(BuildContext context) {
-    final overlay = Overlay.of(context)!;
+    final overlay = Overlay.of(context);
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
     entry = OverlayEntry(builder: (ctx) {
