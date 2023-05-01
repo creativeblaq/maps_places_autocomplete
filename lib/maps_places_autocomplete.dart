@@ -181,7 +181,12 @@ class MapsPlacesAutocomplete extends HookWidget {
             if (showGoogleTradeMark)
               const Padding(
                 padding: EdgeInsets.all(4.0),
-                child: Text("powered by google"),
+                child: Center(
+                  child: Text(
+                    "powered by google",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               )
           ],
         ),

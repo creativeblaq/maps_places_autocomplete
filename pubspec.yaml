@@ -8,7 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  cloud_functions: ^3.2.12
+  cloud_functions:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.3

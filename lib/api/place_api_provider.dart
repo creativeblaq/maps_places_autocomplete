@@ -43,6 +43,8 @@ class PlaceApiProvider {
       "Access-Control-Allow-Methods": 'GET',
     }); */
 
+    print(request);
+
     final response = await Dio()
         .get("https://maps.googleapis.com/maps/api/place/autocomplete/json",
             queryParameters: parameters,
@@ -50,10 +52,11 @@ class PlaceApiProvider {
               "Access-Control-Allow-Origin": "*",
               "Access-Control-Allow-Methods": 'GET',
             }));
-
+    print(response.statusCode);
     if (response.statusCode == 200) {
       //final result = json.decode(response.data);
       final result = response.data;
+      print(result);
 
       if (result['status'] == 'OK') {
         // compose suggestions in a list
