@@ -1,7 +1,10 @@
+import 'package:example/auto_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_places_autocomplete/maps_places_autocomplete.dart';
 import 'package:maps_places_autocomplete/model/place.dart';
 import 'package:maps_places_autocomplete/model/suggestion.dart';
+
+const String mapsKey = '//TODO: key here';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const HomeView(),
     );
   }
 }
@@ -80,8 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   SizedBox(
                     height: 40,
                     child: MapsPlacesAutocomplete(
-                        mapsApiKey: 'YOUR KEY HERE',
+                        mapsApiKey: mapsKey,
                         onSuggestionClick: onSuggestionClick,
+                        usePlain: true,
                         buildItem: (Suggestion suggestion, int index) {
                           return Container(
                               margin: const EdgeInsets.fromLTRB(2, 2, 2, 0),

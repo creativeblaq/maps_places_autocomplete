@@ -27,19 +27,31 @@
     },
     {
       "name": "cloud_functions",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_functions-4.1.1",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/cloud_functions-4.3.0",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "cloud_functions_platform_interface",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_functions_platform_interface-5.2.1",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/cloud_functions_platform_interface-5.4.0",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "cloud_functions_web",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_functions_web-4.4.1",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/cloud_functions_web-4.5.0",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -51,13 +63,21 @@
     },
     {
       "name": "crypto",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.2",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/crypto-3.0.3",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
-      "languageVersion": "2.14"
+      "languageVersion": "2.19"
     },
     {
       "name": "dio",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.1.1",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/dio-5.1.2",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
@@ -69,19 +89,31 @@
     },
     {
       "name": "firebase_core",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-2.10.0",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/firebase_core-2.12.0",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "firebase_core_platform_interface",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_platform_interface-4.6.0",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-4.8.0",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "firebase_core_web",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-2.3.0",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/firebase_core_web-2.5.0",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -207,9 +239,13 @@
     },
     {
       "name": "typed_data",
+<<<<<<< Updated upstream
       "rootUri": "file:///C:/Users/edwin/AppData/Local/Pub/Cache/hosted/pub.dev/typed_data-1.3.1",
+=======
+      "rootUri": "file:///Users/creativeblaq/.pub-cache/hosted/pub.dev/typed_data-1.3.2",
+>>>>>>> Stashed changes
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     },
     {
       "name": "uuid",
@@ -230,7 +266,13 @@
       "languageVersion": "2.16"
     }
   ],
+<<<<<<< Updated upstream
   "generated": "2023-05-01T16:43:49.034883Z",
   "generator": "pub",
   "generatorVersion": "2.19.4"
+=======
+  "generated": "2023-05-15T16:53:25.925879Z",
+  "generator": "pub",
+  "generatorVersion": "2.19.6"
+>>>>>>> Stashed changes
 }
