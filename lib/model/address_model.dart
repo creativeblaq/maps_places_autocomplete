@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class AddressModel {
   String placeId;
   String streetNumber;
