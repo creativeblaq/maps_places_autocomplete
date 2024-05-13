@@ -334,10 +334,21 @@ class PlacesAutocompleteDialog extends StatelessWidget {
   final String? startText;
   final String mapsKey;
 
-  static Future<AddressModel?> show(BuildContext context,
-      {String? startText, required String mapsKey}) async {
+  static Future<AddressModel?> show(
+    BuildContext context, {
+    String? startText,
+    required String mapsKey,
+    bool barrierDismissible = true,
+    Color? barrierColor,
+    String? barrierLabel,
+    bool useSafeArea = true,
+  }) async {
     final address = await showDialog(
         context: context,
+        barrierDismissible: barrierDismissible,
+        barrierColor: barrierColor,
+        barrierLabel: barrierLabel,
+        useSafeArea: useSafeArea,
         builder: (context) => PlacesAutocompleteDialog(
               startText: startText,
               mapsKey: mapsKey,
