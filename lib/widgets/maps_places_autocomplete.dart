@@ -329,10 +329,17 @@ class MapsPlacesAutocomplete extends HookWidget {
 }
 
 class PlacesAutocompleteDialog extends StatelessWidget {
-  const PlacesAutocompleteDialog(
-      {super.key, this.startText, required this.mapsKey});
+  const PlacesAutocompleteDialog({
+    super.key,
+    this.startText,
+    required this.mapsKey,
+    this.inputDecoration,
+    this.margin,
+  });
   final String? startText;
   final String mapsKey;
+  final InputDecoration? inputDecoration;
+  final EdgeInsets? margin;
 
   static Future<AddressModel?> show(
     BuildContext context, {
@@ -342,6 +349,8 @@ class PlacesAutocompleteDialog extends StatelessWidget {
     Color? barrierColor,
     String? barrierLabel,
     bool useSafeArea = true,
+    InputDecoration? inputDecoration,
+    EdgeInsets? margin,
   }) async {
     final address = await showDialog(
         context: context,
@@ -352,6 +361,8 @@ class PlacesAutocompleteDialog extends StatelessWidget {
         builder: (context) => PlacesAutocompleteDialog(
               startText: startText,
               mapsKey: mapsKey,
+              inputDecoration: inputDecoration,
+              margin: margin,
             ));
     return address;
   }
@@ -381,9 +392,13 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
     super.key,
     this.startText,
     required this.mapsKey,
+    this.inputDecoration,
+    this.margin,
   });
   final String? startText;
   final String mapsKey;
+  final InputDecoration? inputDecoration;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
@@ -391,11 +406,21 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       //borderSide: BorderSide(color: SHColors.primaryLight, width: 0.5),
     );
+
+    final decoration = inputDecoration ??
+        InputDecoration(
+          border: border,
+          enabledBorder: border,
+          focusedBorder: border,
+          isDense: true,
+          hintText: 'Search Your Location',
+          //hintStyle: SHTextTheme.body(color: SHColors.iconColorLight),
+        );
     return Card(
       //color: SHColors.primary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 6.0,
-      margin: const EdgeInsets.only(top: 16),
+      margin: margin ?? const EdgeInsets.only(top: 24),
       child: Center(
         child: MapsPlacesAutocomplete(
           prefixIcon: const Icon(
@@ -410,14 +435,7 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
           searchMinChar: 2,
           mapsApiKey: mapsKey,
           //textStyle: SHTextTheme.body(),
-          inputDecoration: InputDecoration(
-            border: border,
-            enabledBorder: border,
-            focusedBorder: border,
-            isDense: true,
-            hintText: 'Search Your Location',
-            //hintStyle: SHTextTheme.body(color: SHColors.iconColorLight),
-          ),
+          inputDecoration: decoration,
           showGoogleTradeMark: false,
           onSuggestionClick: (Place p, Suggestion s) {
             String address = p.streetNumber ?? "";
