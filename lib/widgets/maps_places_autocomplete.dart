@@ -417,7 +417,8 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
           //hintStyle: SHTextTheme.body(color: SHColors.iconColorLight),
         );
     return Card(
-      //color: SHColors.primary,
+      color: Theme.of(context).colorScheme.background,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 6.0,
       margin: margin ?? const EdgeInsets.only(top: 24),
@@ -428,6 +429,7 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
             //color: SHColors.iconColorLight,
             size: 20,
           ),
+
           usePlain: true,
           isOverlay: true,
           startText: startText ?? "",
@@ -436,7 +438,7 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
           mapsApiKey: mapsKey,
           //textStyle: SHTextTheme.body(),
           inputDecoration: decoration,
-          showGoogleTradeMark: false,
+          showGoogleTradeMark: true,
           onSuggestionClick: (Place p, Suggestion s) {
             String address = p.streetNumber ?? "";
             address += " ${p.street ?? ""}";
