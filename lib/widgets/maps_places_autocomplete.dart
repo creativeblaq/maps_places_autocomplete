@@ -419,8 +419,8 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
     return Card(
       color: Theme.of(context).colorScheme.background,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 6.0,
+      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 0,
       margin: margin ?? const EdgeInsets.only(top: 24),
       child: Center(
         child: MapsPlacesAutocomplete(
@@ -474,7 +474,8 @@ class PlacesAutoCompleteSearchBar extends StatelessWidget {
           buildItem: (suggestion, index) {
             return Card(
                 //color: SHColors.primary,
-                margin: EdgeInsets.only(top: index == 0 ? 12 : 4, bottom: 12),
+                margin: EdgeInsets.only(
+                    top: index == 0 ? 12 : 4, bottom: 12, left: 4, right: 4),
                 elevation: 6,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16)),
